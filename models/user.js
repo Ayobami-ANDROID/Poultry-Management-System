@@ -14,6 +14,10 @@ const farmerSchema  = new mongoose.Schema({
     password:{
         type:String,
         required:[true,"password is required"]
+    },
+    Admin:{
+        type:Boolean,
+        default:false
     }
 })
 

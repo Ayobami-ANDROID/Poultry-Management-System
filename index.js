@@ -6,6 +6,7 @@ const cors = require('cors')
 const xss = require('xss-clean')
 const rateLimiter = require('express-rate-limit')
 const mongoose = require('mongoose')
+const User = require('./routes/user')
 require("dotenv").config()
 mongoose.set('strictQuery', false)
 app.set('trust proxy',1)
@@ -21,10 +22,12 @@ app.use(rateLimiter({
   max:100,
 }))
 
+app.use('/user',User) 
+
 const start = async () =>{
     await connectDB(process.env.Mongo_Url)
     app.listen(port,()=>{
-        console.log('listening on 3000')
+        console.log(`listening on ${port}`)
     })
 }
 start()

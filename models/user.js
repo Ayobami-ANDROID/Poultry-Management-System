@@ -5,6 +5,10 @@ const farmerSchema  = new mongoose.Schema({
         type:String,
         required:[true,"The name of farmer is required"]
     },
+    email:{
+        type:String,
+        required:[true,"The email is required"]
+    },
     phoneNo:{
         type:String,
     },

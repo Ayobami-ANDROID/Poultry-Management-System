@@ -15,6 +15,9 @@ const birdSchema = new mongoose.Schema({
         type:String,
         default:"available",
         enum:["available","sold out"]
+    },
+    Kilogram:{
+         type:Number,
     }
 })
 

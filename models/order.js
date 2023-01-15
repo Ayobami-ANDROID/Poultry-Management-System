@@ -10,9 +10,6 @@ const orderSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    shippingAddress2:{
-        type:String,
-    },
     city:{
         type:String,
         required:true

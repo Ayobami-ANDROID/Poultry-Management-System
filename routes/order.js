@@ -26,8 +26,8 @@ router.post('/createOrder',async(req,res)=>{
     const orderItemsIdsResolved = await orderItemIds
 
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) =>{
-        const orderItem = await  OrderItem.findById(orderItemId).populate('product','price ')
-        const totalPrice = orderItem.product.price*orderItem.quantity
+        const orderItem = await  OrderItem.findById(orderItemId).populate('Product','price ')
+        const totalPrice = orderItem.Product.price*orderItem.quantity
         return totalPrice
     }))
 
@@ -80,7 +80,7 @@ router.delete('/:id',async(req,res)=>{
        return res.status(400).json({success:false,error:err})
     })
    })
-   
+
    router.get('/get/totalsales',async (req,res)=>{
     const totalSales = await Order.aggregate([
        {$group:{_id:null,totalSales:{$sum:'$totalPrice'}}}

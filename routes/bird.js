@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
       if(isValid){
         uploadError= null
       }
-      cb(uploadError, 'public/uploads')
+      cb(uploadError, 'public/upload')
     },
     filename: function (req, file, cb) {
       const fileName = file.originalname.split(' ').join('-')
@@ -42,7 +42,7 @@ router.post('/',upload.single('image'),async(req,res) =>{
         const file = req.file
         if(!file) return res.status(400).send("No image in the request")
         const fileName = req.file.filename
-        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`
+        const basePath = `${req.protocol}://${req.get('host')}/public/upload/`
         let product = new Product({
             birdType:req.body.birdType,
             image:`${basePath}${fileName}`,
@@ -74,13 +74,9 @@ router.delete('/deleteUser/:id',async(req,res)=>{
     res.send('product deleted')
 })
 
-router.put('/updateUser/:id',upload.single('image'),async(req,res)=>{
-     const product = await Product.findByIdAndUpdate({_id:req.params},{
-        birdType:req.body.birdType,
-        image:`${basePath}${fileName}`,
-        price:req.body.price,
-        status:req.body.status,
-        Kilogram:req.body.Kilogram
+router.put('/updateUser/:id',async(req,res)=>{
+     const product = await Product.findByIdAndUpdate({_id:req.params},{ 
+        status:req.body.status,  
      },{new:true,runValidators:true})
      if(!product){
         return res.status(400).send('product cannot be created')

@@ -8,6 +8,7 @@ const rateLimiter = require('express-rate-limit')
 const mongoose = require('mongoose')
 const User = require('./routes/user')
 const Product = require('./routes/bird')
+const Order = require('./routes/order')
 require("dotenv").config()
 mongoose.set('strictQuery', false)
 app.set('trust proxy',1)
@@ -25,6 +26,7 @@ app.use(rateLimiter({
 
 app.use('/user',User) 
 app.use('/product',Product)
+app.use('/order',Order)
 
 const start = async () =>{
     await connectDB(process.env.Mongo_Url)

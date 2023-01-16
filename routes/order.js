@@ -56,4 +56,14 @@ router.post('/createOrder',async(req,res)=>{
     res.status(200).json({order,paymentIntentId:paymentIntent.client_secret})
 })
 
+router.put('/updateOrder/:id',async(req,res)=>{
+    const order = new Order.findByIdAndUpdate({_id:req.params.id},{
+        status:req.body.status
+    },{new:true,runValidators:true})
+    if(!order){
+       return  res.status(400).json({message:'The order not be updated'})
+    }
+    res.status(200).json({order})
+})
+
 module.exports = router

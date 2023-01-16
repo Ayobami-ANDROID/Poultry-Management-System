@@ -9,7 +9,7 @@ const birdSchema = new mongoose.Schema({
         default:'',
     },
     price:{
-       type:String,
+       type:Number,
     },
     status:{
         type:String,

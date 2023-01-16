@@ -30,11 +30,25 @@ const storage = multer.diskStorage({
 router.get('/',async (req,res) =>{
     try {
         const product = await Product.find({})
-        res.status(200).json({product},product.length)
+        res.status(200).json({product:product,count:product.length})
     } catch (error) {
         console.log(error)
     }
-   
+})
+
+router.get('/getAllAvailable',async(req,res)=>{
+    const product = await Product.find({status:'available'})
+    
+    res.status(200).json({product:product,count:product.length})
+    
+})
+
+router.get('/getAllSold',async(req,res)=>{
+    const product = await Product.find({status:'sold out'})
+    if(!product){
+        return res.status(400).send('No product found')
+    }
+    res.status(200).json({product:product,count:product.length})
 })
 
 router.post('/',upload.single('image'),async(req,res) =>{

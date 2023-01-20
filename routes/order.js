@@ -3,9 +3,10 @@ const router = express.Router()
 const OrderItem = require("../models/order-item")
 const Order = require("../models/order")
 const stripe = require('stripe')(process.env.Secret_Key)
+const {verifyToken,verifyTokenAndAdmin} = require("../auth/auth")
 require('dotenv').config()
 
-router.get('/', async(req,res)=>{
+router.get('/', verifyTokenAndAdmin,async(req,res)=>{
     const orderList = await Order.find({}).populate('user','name').sort({'dateOrdered': -1})
 
     if(!orderList){
@@ -14,7 +15,7 @@ router.get('/', async(req,res)=>{
     res.status(200).json(orderList)
 })
 
-router.post('/createOrder',async(req,res)=>{
+router.post('/createOrder',verifyToken,async(req,res)=>{
     const orderItemIds = Promise.all(req.body.orderItems.map(async orderItem =>{
         let newOrderItem = OrderItem({
             quantity:orderItem.quantity,
@@ -56,7 +57,7 @@ router.post('/createOrder',async(req,res)=>{
     res.status(200).json({order,paymentIntentId:paymentIntent.client_secret})
 })
 
-router.put('/updateOrder/:id',async(req,res)=>{
+router.put('/updateOrder/:id',verifyToken,async(req,res)=>{
     const order = new Order.findByIdAndUpdate({_id:req.params.id},{
         status:req.body.status
     },{new:true,runValidators:true})
@@ -66,7 +67,7 @@ router.put('/updateOrder/:id',async(req,res)=>{
     res.status(200).json({order})
 })
 
-router.delete('/:id',async(req,res)=>{
+router.delete('/:id',verifyToken,async(req,res)=>{
     Order.findByIdAndDelete({_id:req.params.id}).then(async order =>{
        if(order){
            await order.orderItems.map(async orderItem =>{
@@ -81,7 +82,7 @@ router.delete('/:id',async(req,res)=>{
     })
    })
 
-   router.get('/get/totalsales',async (req,res)=>{
+   router.get('/get/totalsales',verifyTokenAndAdmin,async (req,res)=>{
     const totalSales = await Order.aggregate([
        {$group:{_id:null,totalSales:{$sum:'$totalPrice'}}}
     ])

@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const Product = require("../models/bird")
 const multer = require("multer") 
+const {verifyToken,verifyTokenAndAdmin} = require("../auth/auth")
 
 
 
@@ -27,7 +28,7 @@ const storage = multer.diskStorage({
   })
   
   const upload = multer({ storage: storage })
-router.get('/',async (req,res) =>{
+router.get('/',verifyTokenAndAdmin,async (req,res) =>{
     try {
         const product = await Product.find({})
         res.status(200).json({product:product,count:product.length})
@@ -36,14 +37,14 @@ router.get('/',async (req,res) =>{
     }
 })
 
-router.get('/getAllAvailable',async(req,res)=>{
+router.get('/getAllAvailable',verifyTokenAndAdmin,async(req,res)=>{
     const product = await Product.find({status:'available'})
     
     res.status(200).json({product:product,count:product.length})
     
 })
 
-router.get('/getAllSold',async(req,res)=>{
+router.get('/getAllSold',verifyTokenAndAdmin,async(req,res)=>{
     const product = await Product.find({status:'sold out'})
     if(!product){
         return res.status(400).send('No product found')
@@ -51,7 +52,7 @@ router.get('/getAllSold',async(req,res)=>{
     res.status(200).json({product:product,count:product.length})
 })
 
-router.post('/',upload.single('image'),async(req,res) =>{
+router.post('/',verifyToken,upload.single('image'),async(req,res) =>{
     try {
         const file = req.file
         if(!file) return res.status(400).send("No image in the request")
@@ -79,7 +80,7 @@ router.post('/',upload.single('image'),async(req,res) =>{
 })
 
 
-router.delete('/deleteUser/:id',async(req,res)=>{
+router.delete('/deleteUser/:id',verifyToken,async(req,res)=>{
     const product = await Product.findByIdAndDelete({_id:req.params.id})
 
    if(!product){
@@ -88,7 +89,7 @@ router.delete('/deleteUser/:id',async(req,res)=>{
     res.send('product deleted')
 })
 
-router.put('/updateUser/:id',async(req,res)=>{
+router.put('/updateUser/:id',verifyToken,async(req,res)=>{
      const product = await Product.findByIdAndUpdate({_id:req.params},{ 
         status:req.body.status,  
      },{new:true,runValidators:true})

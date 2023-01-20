@@ -11,7 +11,7 @@ const verifyToken = (req,res,next) =>{
         const payload = jwt.verify(token,Jwt_Secret)
         req.user = {userId: payload.userId, name: payload.username,isAdmin:payload.isAdmin}
     } catch (error) {
-        
+        console.log(error)
     }
 }
 

@@ -48,7 +48,7 @@ router.post('/login',async (req,res) =>{
         }
     
         if(user && bcrypt.compareSync(req.body.password,user.password)){
-            const token = jwt.sign({userId:user.id,username:user.email,isAdmin:user.Admin},process.env.Jwt_Secret,{expiresIn:"2h"})
+            const token = jwt.sign({userId:user._id,username:user.email,isAdmin:user.Admin},process.env.Jwt_Secret,{expiresIn:"2h"})
             res.status(201).json({user,token:token})
         }
     } catch (error) {

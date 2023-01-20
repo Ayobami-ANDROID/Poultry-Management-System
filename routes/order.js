@@ -3,8 +3,18 @@ const router = express.Router()
 const OrderItem = require("../models/order-item")
 const Order = require("../models/order")
 const stripe = require('stripe')(process.env.Secret_Key)
+const nodemailer = require("nodemailer")
 const {verifyToken,verifyTokenAndAdmin} = require("../auth/auth")
 require('dotenv').config()
+
+let transporter = nodemailer.createTransport({
+    service:'gmail',
+    auth:{
+        user:process.env.EMAIL_USERNAME,
+        pass:process.env.EMAIL_PASSWORD ,
+    }
+
+})
 
 router.get('/', verifyTokenAndAdmin,async(req,res)=>{
     const orderList = await Order.find({}).populate('user','name').sort({'dateOrdered': -1})

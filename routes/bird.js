@@ -31,6 +31,15 @@ const storage = multer.diskStorage({
 router.get('/',verifyTokenAndAdmin,async (req,res) =>{
     try {
         const product = await Product.find({})
+
+        if(product === undefined){
+            return res.status(400).send('no product found')
+        }
+
+        if(!product){
+            return res.status(400).send('No product found')
+        }
+
         res.status(200).json({product:product,count:product.length})
     } catch (error) {
         console.log(error)
@@ -39,6 +48,14 @@ router.get('/',verifyTokenAndAdmin,async (req,res) =>{
 
 router.get('/getAllAvailable',verifyTokenAndAdmin,async(req,res)=>{
     const product = await Product.find({status:'available'})
+
+    if(product === undefined){
+        return res.status(400).send('no product available')
+    }
+
+    if(!product){
+        return res.status(400).send('No product found')
+    }
     
     res.status(200).json({product:product,count:product.length})
     
@@ -46,6 +63,10 @@ router.get('/getAllAvailable',verifyTokenAndAdmin,async(req,res)=>{
 
 router.get('/getAllSold',verifyTokenAndAdmin,async(req,res)=>{
     const product = await Product.find({status:'sold out'})
+
+    if(product === undefined){
+        return res.status(400).send('no product available')
+    } 
     if(!product){
         return res.status(400).send('No product found')
     }
